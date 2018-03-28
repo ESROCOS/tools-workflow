@@ -297,10 +297,10 @@ for dirname in dirs:
 
 # walk files in directory
 
-  for (dirpath, dirnames, filenames) in walk(SHARED_TYPES_DIR+"/"+dirname+"/asn"):
+  for (dirpath, dirnames, filenames) in walk(SHARED_TYPES_DIR+dirname):
     for filename in filenames:
       try:
-        copyfile(dirpath+"/"+filename,INSTALLED_TYPES_DIR+dirname+"/asn/"+filename)
+        copyfile(dirpath+"/"+filename,INSTALLED_TYPES_DIR+dirname+"/"+filename)
       except IOError as err:
         raise err
 
