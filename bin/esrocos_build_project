@@ -36,12 +36,6 @@ except KeyError:
 
 print "DONE"
 
-# DELETE OLD PRE INI SCRIPT
-try: 
-  os.remove("./user-init-pre.sh")
-except OSError:
-  print "no pre init file, creating..."
-
 # CREATE PRE INIT SCRIPT
 
 build_partition = "x86_partition:"
@@ -88,11 +82,16 @@ print "DONE"
 orchestrator_options = ""
 
 if link_libraries != "":
-  orchestrator_options = "--with-extra-lib "+build_partition+link_libraries
+  orchestrator_options = " --with-extra-lib "+build_partition+link_libraries
 
 deployment_view = project_name+'_dp.aadl'
 
-os.environ["ORCHESTRATOR_OPTIONS"] = orchestrator_options
+if not 'ORCHESTRATOR_OPTIONS' in os.environ:
+  os.environ["ORCHESTRATOR_OPTIONS"] = "" 
+
+os.environ["ORCHESTRATOR_OPTIONS"] += orchestrator_options
+os.environ["ORCHESTRATOR_OPTIONS"] += " --no-retry"
+
 os.environ["DEPLOYMENTVIEW"] = deployment_view
 
 # RUN BUILD SCRIPT
@@ -100,3 +99,4 @@ os.environ["DEPLOYMENTVIEW"] = deployment_view
 taste_arguments = ["./build-script.sh"]
 
 call(taste_arguments)
+
