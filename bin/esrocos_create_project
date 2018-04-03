@@ -10,8 +10,6 @@ from subprocess import call
 ESROCOS_YAML = "esrocos.yml"
 SRC_DIR = "dataview/"
 INSTALLED_TYPES_DIR = "installed_types/"
-INSTALLED_PKGS_DIR = "installed_pkgs/"
-LOCAL=True
 
 print "init esrocos project..."
 sys.stdout.flush()
@@ -43,47 +41,32 @@ try:
       print "creating esrocos.yml"
 except IOError as err:
   print "no file found, creating.."
-
-
-#INTERACTIVELY ASK FOR OS DEPENDENCIES
-
-print "Please enter the projects OS dependencies, proceed by pressing return"
-os_deps = []
-user_input = "default"
-while not user_input == "":
-  user_input = raw_input("> ")
-  if not user_input == "":
-    os_deps.append(user_input)
-
-print os_deps  
   
-#INTERACTIVELY ASK FOR PACKAGE DEPENDENCIES
+#INTERACTIVELY ASK FOR DEPENDENCIES
 
-pkg_deps = []
+deps = []
 
-print "Please enter package dependencies, proceed by pressing return"
+print "Please enter dependencies, proceed by pressing return"
 user_input = "default"
 while not user_input == "":
   user_input = raw_input("> ")
   if not user_input == "":
-    pkg_deps.append(user_input)
+    deps.append(user_input)
 
-print pkg_deps
-print "please make sure these packages are either other locally developed esrocos components or to give additional version control information in the esrocos.yml"
+print deps
+print "please make sure autoproj is able to resolve these dependencies."
 
 #GENERATE CONF FILE
 
 data = {}
 data["PROJECT_NAME"] = project_name
-data["os_deps"] = os_deps
-data["pkg_deps"] = []
-data["LOCAL_PROJECT"] = LOCAL
-for dep in pkg_deps:
-  data["pkg_deps"].append({dep:''})
+data["deps"] = []
+
+for dep in deps:
+  data["deps"].append({dep:''})
 
 data["ASNACN_DIR"] = SRC_DIR
 data["INSTALLED_TYPES_DIR"] = INSTALLED_TYPES_DIR 
-data["INSTALLED_PKGS_DIR"] = INSTALLED_PKGS_DIR
 
 try:
   with open(ESROCOS_YAML, 'w') as outfile:
@@ -113,32 +96,21 @@ except OSError as err:
 print "DONE"
 
 # ADVERTISE PROJECT IN AUTOPROJ/LOCAL.AUTOBUILD
-#print "create local autobuild...\t",
+print "create local autobuild...\t",
 
-#path = os.environ['AUTOPROJ_CURRENT_ROOT']+"/autoproj/"+project_name+".autobuild"
+path = os.environ['AUTOPROJ_CURRENT_ROOT']+"/autoproj/"+project_name+".autobuild"
 
-#try:
-#  with open(path, 'a') as outfile:
-#    outfile.write('import_package "'+project_name+'"')
+try:
+  with open(path, 'a') as outfile:
+    outfile.write('esrocos_package "'+project_name+'"')
 
-#except IOError as err:
-#  print "could not write to file, exit..."
-#  sys.exit()
+except IOError as err:
+  print "could not write to file, exit..."
+  sys.exit()
 
-#print "DONE"
+print "DONE"
 
 #CREATE ASN FILES
-#print "copy taste-types...\t\t",
-#sys.stdout.flush()
-
-#lproc = subprocess.Popen(["taste-config","--prefix"], stdout=subprocess.PIPE)
-#tasteconfig = proc.stdout.read().rstrip()
-
-#cp_arguments = ["cp",tasteconfig + "/share/taste-types/taste-types.asn", SRC_DIR + "/taste-types.asn"]
-
-#call(cp_arguments)
-
-#print "DONE"
 
 print "create asn file...\t\t",
 
