@@ -36,12 +36,6 @@ except KeyError:
 
 print "DONE"
 
-# DELETE OLD PRE INI SCRIPT
-try: 
-  os.remove("./user-init-pre.sh")
-except OSError:
-  print "no pre init file, creating..."
-
 # CREATE PRE INIT SCRIPT
 
 build_partition = "x86_partition:"
@@ -88,15 +82,17 @@ print "DONE"
 orchestrator_options = ""
 
 if link_libraries != "":
-  orchestrator_options = 'export ORCHESTRATOR_OPTIONS="--with-extra-lib '+build_partition+link_libraries+'"'
+  orchestrator_options = " --with-extra-lib "+build_partition+link_libraries
 
-try:
-  with open("./user_init_pre.sh", 'w') as outfile:
-    outfile.write('export DEPLOYMENTVIEW="'+project_name+'_dp.aadl"\n\n'+orchestrator_options)
-   
-except IOError as err:
-  print "could not write to file, exit..."
-  sys.exit()
+deployment_view = project_name+'_dp.aadl'
+
+if not 'ORCHESTRATOR_OPTIONS' in os.environ:
+  os.environ["ORCHESTRATOR_OPTIONS"] = "" 
+
+os.environ["ORCHESTRATOR_OPTIONS"] += orchestrator_options
+os.environ["ORCHESTRATOR_OPTIONS"] += " --no-retry"
+
+os.environ["DEPLOYMENTVIEW"] = deployment_view
 
 # RUN BUILD SCRIPT
 
@@ -104,8 +100,3 @@ taste_arguments = ["./build-script.sh"]
 
 call(taste_arguments)
 
-# REMOVE PRE INIT SCRIPT
-try: 
-  os.remove("./user_init_pre.sh")
-except OSError:
-  print "exit..."
