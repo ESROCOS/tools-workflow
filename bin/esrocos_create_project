@@ -8,6 +8,7 @@ import subprocess
 from subprocess import call 
 
 ESROCOS_YAML = "esrocos.yml"
+ESROCOS_LINKINGS_YAML = "linkings.yml"
 SRC_DIR = "dataview/"
 INSTALLED_TYPES_DIR = "installed_types/"
 INSTALLED_PKGS_DIR = "installed_pkgs/"
@@ -91,6 +92,19 @@ try:
 except IOError as err:
   print "could not write to file, exit..."
   sys.exit()
+
+
+#GENERATE LINKINGS (empty)
+data = {}
+data["libs"] = []
+
+try:
+  with open(ESROCOS_LINKINGS_YAML, 'w') as outfile:
+    yaml.dump(data, outfile, default_flow_style=False, allow_unicode=True)
+except IOError as err:
+  print "could not write to file, exit..."
+  sys.exit()
+
 
 #CREATE FOLDER STRUCTURE
 print "create folder structure...\t",
