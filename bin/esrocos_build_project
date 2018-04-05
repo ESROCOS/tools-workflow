@@ -25,7 +25,6 @@ try:
     project_name = data["PROJECT_NAME"]
     SRC_DIR = data["ASNACN_DIR"]
     INSTALLED_TYPES_DIR = data["INSTALLED_TYPES_DIR"]
-    INSTALLED_PKGS_DIR = data["INSTALLED_PKGS_DIR"]
   
 except IOError:
   print "could not read esrocos.yml, aborting..."
