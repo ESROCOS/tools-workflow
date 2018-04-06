@@ -8,7 +8,6 @@ from os import walk
 from subprocess import call 
 
 ESROCOS_YAML = "esrocos.yml"
-INSTALLED_DIR = ""
 ASNACN_DIR = ""
 PROJECT_NAME = ""
 
@@ -21,7 +20,6 @@ try:
       sys.stdout.flush()      
 
       data = yaml.load(stream)
-      INSTALLED_DIR = data["INSTALLED_TYPES_DIR"]
       ASNACN_DIR = data["ASNACN_DIR"]
       PROJECT_NAME = data["PROJECT_NAME"]
 
@@ -44,20 +42,7 @@ al_args = ["--aadl-library"]
 #EXTEND ARGUMENTS WITH FILE NAMES
   # DATA VIEW
 
-dv_files = ""
-f = []
-
-for (dirpath, dirnames, filenames) in walk(INSTALLED_DIR):
-  f.extend(filenames)
-  break
-
-for filename in f:
-  path = ""
-  if filename.endswith(".aadl"):
-    dv_files = dv_files + os.getcwd() + "/" + INSTALLED_DIR + filename+ ","
-
-dv_files = dv_files[:-1]
-dv_args.append(dv_files)
+dv_args.append(PROJECT_NAME+"_dv.aadl")
 
   # INTERFACE VIEW
 
