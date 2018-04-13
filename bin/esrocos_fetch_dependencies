@@ -10,10 +10,10 @@ import re
 
 ESROCOS_YAML = "esrocos.yml"
 ROOT_DIR = os.environ['AUTOPROJ_CURRENT_ROOT']
+SHARED_TYPES_DIR = ROOT_DIR+"/install/types/"
 
 project_name = ""
 SRC_DIR = ""
-INSTALLED_TYPES_DIR = ""
 
 # READ YAML
 
@@ -27,7 +27,6 @@ try:
     data = yaml.load(infile)
     project_name = data["PROJECT_NAME"]
     SRC_DIR = data["ASNACN_DIR"]
-    INSTALLED_TYPES_DIR = data["INSTALLED_TYPES_DIR"]
 
 except IOError:
   print "could not read esrocos.yml, aborting..."
@@ -38,7 +37,7 @@ except KeyError:
 
 print "DONE"
 
-# EXTRACT LOCAL AND REMOTE PKG DEPS
+# EXTRACT DEPS
 
 try:
   deps = data['deps']
@@ -47,12 +46,12 @@ except KeyError as err:
   sys.exit()
 
 
-# GENERATE LOCAL manifest.xml
+# GENERATE AUTOPROJ manifest.xml
 print "generate manifest.xml...\t\t",
 
 package = ET.Element("package")
 
-# generate entries for all packages to force package existence at compile time
+# generate autoproj entries for all packages to force package existence at compile time
 for dep in deps:
   for key in dep:
     if not dep[key]:
@@ -69,6 +68,7 @@ print "calling aup, checking out deps ..."
 aup_arguments = ["aup", project_name]
 call(aup_arguments)
 
+#AMAKE
 print "calling amake, installing deps..."
 
 for dep in deps:
@@ -77,10 +77,7 @@ for dep in deps:
       amake_arguments = ["amake", key]
       call(amake_arguments)
 
-# INSTALL DEPS IN PROJECT DIR
-
-# create hash map of packages to copy from
-
+# create hash map of packages to compile types from
 types_map = {}
 
 for dep in deps:
@@ -93,13 +90,9 @@ for dep in deps:
        except AttributeError:
          print "no match"            
 
-# COPY ASN FILES FROM SHARED DIR TO LOCAL INSTALL DIR
-
-# walk directories and copy files
-print "locally installing shared types...\t", 
+# WALK ASN FILES TO COMPILE INTO AADL
+print "compiling shared types...\t", 
 sys.stdout.flush()
-
-SHARED_TYPES_DIR = ROOT_DIR+"/install/types/"
 
 # walk through each directory in the installed types
 dirs = []
@@ -108,76 +101,35 @@ for (dirpath, dirnames, filenames) in walk(SHARED_TYPES_DIR):
   dirs.extend(dirnames)
   break
 
-for dirname in dirs:
+asn_acn_files = []
 
-# proceed only if dir is the name of a dependency
-  try:
-    if not types_map[dirname]:
-      continue
-    else:
+for dirname in dirs:
+  if dirname in types_map:
       del types_map[dirname]
-  except KeyError:
+  else:
     continue
 
-# create install dir for dependency 
-  try:
-    os.makedirs(INSTALLED_TYPES_DIR+dirname+"/asn")
-  except OSError as err:
-    if not err.errno == 17: 
-      raise err  
-
-# walk files in directory
-
+  #else proceed:
+ 
   for (dirpath, dirnames, filenames) in walk(SHARED_TYPES_DIR+dirname):
     for filename in filenames:
       try:
-        copyfile(dirpath+"/"+filename,INSTALLED_TYPES_DIR+dirname+"/"+filename)
+	asn_acn_files.append(dirpath+"/"+filename)
+
       except IOError as err:
         raise err
-
-if len(types_map) > 0:
-  print "FAILED"
-  print "not all type dependencies could be resolved:"
-  for dep in types_map:
-    print dep
-  sys.exit()
 
 
 print "DONE"
 
 # COMPILE ASN AND ACN TO MONOLITHIC AADL FILE
 
-print "compiling types to aadl...\t\t",
+print "compiling types to aadl...\t",
 sys.stdout.flush()
-
-#getting asn and acn files from folder
-
-asn_acn_files = []
-asn_filenames = []
-
-for (dirpath, dirnames, filenames) in walk(SRC_DIR):
-  for filename in filenames:
-    if filename.endswith(".asn") or filename.endswith(".acn"):
-      if not filename in asn_filenames:
-        asn_acn_files.append(os.getcwd()+"/"+os.path.join(dirpath,filename))
-        asn_filenames.append(filename)
-      else: 
-        print "duplicate: "+filename
-
-for (dirpath, dirnames, filenames) in walk(INSTALLED_TYPES_DIR):
-  for filename in filenames:
-    if filename.endswith(".asn") or filename.endswith(".acn"):
-      if not filename in asn_filenames:
-        asn_acn_files.append(os.getcwd()+"/"+os.path.join(dirpath,filename))
-        asn_filenames.append(filename)
-      else: 
-        print "duplicate: "+filename
-
-#print asn_acn_files
 
 asn_arguments = ["asn2aadlPlus"]
 asn_arguments.extend(asn_acn_files)
-asn_arguments.append(os.getcwd()+ "/" + INSTALLED_TYPES_DIR + project_name.replace(" ", "_") + "_dv.aadl")
+asn_arguments.append(os.getcwd()+ "/" + project_name.replace(" ", "_") + "_dv.aadl")
 
 call(asn_arguments)
 
