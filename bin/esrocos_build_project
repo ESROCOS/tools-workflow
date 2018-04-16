@@ -95,4 +95,5 @@ os.environ["DEPLOYMENTVIEW"] = deployment_view
 
 taste_arguments = ["./build-script.sh"]
 
-call(taste_arguments)
+sys.exit(call(taste_arguments))
+
