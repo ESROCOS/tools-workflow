@@ -39,8 +39,7 @@ print "DONE"
 
 build_partition = "x86_partition:"
 link_libraries = ""
-link_info_file = "linkings.yml"
-
+link_info_file = "build/linkings.yml"
 
 first = True
 
@@ -68,8 +67,7 @@ try:
     except KeyError:
       print "no link data, proceed..."
 except IOError:
-  print "could not read linkings.yml in "+link_info_file+", aborting..."
-  sys.exit()
+  print "could not read or find linkings.yml in "+link_info_file+", no linkings..."
 except KeyError:
   print "could not read linkings.yml in "+link_info_file+", aborting..."
   sys.exit()
@@ -98,4 +96,3 @@ os.environ["DEPLOYMENTVIEW"] = deployment_view
 taste_arguments = ["./build-script.sh"]
 
 call(taste_arguments)
-
