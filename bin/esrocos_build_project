@@ -7,12 +7,11 @@ from os import walk
 
 ESROCOS_YAML = "esrocos.yml"
 ROOT_DIR = os.environ['AUTOPROJ_CURRENT_ROOT']
+LINKINGS_YAML = "linkings.yml"
 
 project_name = ""
-SRC_DIR = ""
-INSTALLED_TYPES_DIR = ""
-INSTALLED_PKGS_DIR = ""
-# READ YAML
+
+# READ ESROCOS YAML
 
 print "read esrocos.yml...",
 
@@ -34,52 +33,40 @@ except KeyError:
   sys.exit()
 
 print "DONE"
-
-# CREATE PRE INIT SCRIPT
-
-build_partition = "x86_partition:"
-link_libraries = ""
-link_info_file = "build/linkings.yml"
-
-first = True
+#CONFIGURE ORCHESTRATOR_OPTIONS
+linkings = {}
+orchestrator_options = ""
 
 # open link_library yml file
 
-link_data = []
-
 try:
-  with open(link_info_file, 'r') as infile:
+  with open(LINKINGS_YAML, 'r') as infile:
   
     data = yaml.load(infile)
-    try:
-      link_data = data['libs']
-      try: 
-        
-        for lib in link_data:
-          if not first:
-            link_libraries += ","
-          else: 
-            first = False
-           
-          link_libraries += lib
-      except TypeError:
-        print "empty linking list, proceed..." 
-    except KeyError:
-      print "no link data, proceed..."
+
+    for partition in data:
+      libs = data[partition]
+      linkings[partition] = " --with-extra-lib "+partition+":"       
+      
+      first = True  
+      for lib in libs:
+        if not first:
+          linkings[partition] += ","
+        else: 
+          first = False
+            
+        linkings[partition] += lib
+          
 except IOError:
   print "could not read or find linkings.yml in "+link_info_file+", no linkings..."
 except KeyError:
-  print "could not read linkings.yml in "+link_info_file+", aborting..."
+  print "could not read linkings.yml in "+LINKINGS_YAML+", aborting..."
   sys.exit()
 
 print "DONE"
 
-# write infos to user_init_pre.sh
-
-orchestrator_options = ""
-
-if link_libraries != "":
-  orchestrator_options = " --with-extra-lib "+build_partition+link_libraries
+for entry in linkings:
+  orchestrator_options += linkings[entry]  
 
 deployment_view = project_name+'_dp.aadl'
 
