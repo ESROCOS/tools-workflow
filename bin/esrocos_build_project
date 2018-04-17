@@ -7,7 +7,7 @@ from os import walk
 
 ESROCOS_YAML = "esrocos.yml"
 ROOT_DIR = os.environ['AUTOPROJ_CURRENT_ROOT']
-LINKINGS_YAML = "linkings.yml"
+LINKINGS_YAML = "build/linkings.yml"
 
 project_name = ""
 
@@ -58,7 +58,7 @@ try:
         linkings[partition] += lib
           
 except IOError:
-  print "could not read or find linkings.yml in "+link_info_file+", no linkings..."
+  print "could not read or find linkings.yml in "+LINKINGS_YAML+", no linkings..."
 except KeyError:
   print "could not read linkings.yml in "+LINKINGS_YAML+", aborting..."
   sys.exit()
