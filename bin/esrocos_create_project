@@ -174,27 +174,6 @@ except IOError as err:
 else:
   print "DONE"
 
-# COPY PKG-CONFIG TEMPLATE
-print "generate package-config file...\t",
-
-try:
-  inpath = os.environ['ESROCOS_TEMPLATES'] + "/pkg-config-template.pc.in"
-  outpath = os.environ['AUTOPROJ_CURRENT_ROOT'] + "/" + project_name + "/"+ project_name +".pc.in"
-  
-  with open(inpath, 'r') as infile, open (outpath, 'w') as outfile:
-    # read
-    data = infile.read()
-    # replace  
-    data = data.replace("@PROJECT@", project_name)
-    # write
-    outfile.write(data)
-
-except IOError as err:
-  print "FAILED"
-  raise
-else:
-  print "DONE"
-
 #FINALLY
 print """
 ESROCOS project initialized successfully.

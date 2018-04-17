@@ -33,7 +33,6 @@ except KeyError:
   sys.exit()
 
 print "DONE"
-
 #CONFIGURE ORCHESTRATOR_OPTIONS
 linkings = {}
 orchestrator_options = ""
@@ -59,8 +58,7 @@ try:
         linkings[partition] += lib
           
 except IOError:
-  print "could not read linkings.yml in "+LINKINGS_YAML+", aborting..."
-  sys.exit()
+  print "could not read or find linkings.yml in "+link_info_file+", no linkings..."
 except KeyError:
   print "could not read linkings.yml in "+LINKINGS_YAML+", aborting..."
   sys.exit()
@@ -84,5 +82,5 @@ os.environ["DEPLOYMENTVIEW"] = deployment_view
 
 taste_arguments = ["./build-script.sh"]
 
-call(taste_arguments)
+sys.exit(call(taste_arguments))
 
