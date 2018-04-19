@@ -8,8 +8,7 @@ import subprocess
 from subprocess import call 
 
 ESROCOS_YAML = "esrocos.yml"
-SRC_DIR = "dataview/"
-INSTALLED_TYPES_DIR = "installed_types/"
+ASN_DIR = "dataview/"
 
 print "init esrocos project..."
 sys.stdout.flush()
@@ -65,8 +64,7 @@ data["deps"] = []
 for dep in deps:
   data["deps"].append({dep:''})
 
-data["ASNACN_DIR"] = SRC_DIR
-data["INSTALLED_TYPES_DIR"] = INSTALLED_TYPES_DIR 
+data["ASNACN_DIR"] = ASN_DIR
 
 try:
   with open(ESROCOS_YAML, 'w') as outfile:
@@ -80,14 +78,7 @@ print "create folder structure...\t",
 sys.stdout.flush()
 
 try:
-  os.makedirs(SRC_DIR)
-except OSError as err:
-  if not err.errno == 17: 
-    print "FAILED"
-    raise
-
-try: 
-  os.makedirs(INSTALLED_TYPES_DIR)
+  os.makedirs(ASN_DIR)
 except OSError as err:
   if not err.errno == 17: 
     print "FAILED"
@@ -124,7 +115,7 @@ END
   """
 
 try:
-  with open(SRC_DIR+project_name.replace(' ', '_') +".asn", 'w') as outfile:
+  with open(ASN_DIR+project_name.replace(' ', '_') +".asn", 'w') as outfile:
     outfile.write(data_view_asn)
 except IOError as err:
   print "FAILED"
@@ -140,7 +131,7 @@ asn1_args = ["which", "asn1.exe"]
 proc = subprocess.Popen(asn1_args, stdout=subprocess.PIPE)
 asn1 = proc.stdout.read().rstrip()
 
-mono_args=["mono", asn1, "-o", SRC_DIR, "-ACND", SRC_DIR +project_name.replace(' ', '_') + '.asn']
+mono_args=["mono", asn1, "-o", ASN_DIR, "-ACND", ASN_DIR +project_name.replace(' ', '_') + '.asn']
 
 call(mono_args)
 
