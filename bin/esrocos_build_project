@@ -22,8 +22,7 @@ try:
 
     data = yaml.load(infile)
     project_name = data["PROJECT_NAME"]
-    SRC_DIR = data["ASNACN_DIR"]
-    INSTALLED_TYPES_DIR = data["INSTALLED_TYPES_DIR"]
+    ASN_DIR = data["ASNACN_DIR"]
   
 except IOError:
   print "could not read esrocos.yml, aborting..."
@@ -83,4 +82,3 @@ os.environ["DEPLOYMENTVIEW"] = deployment_view
 taste_arguments = ["./build-script.sh"]
 
 sys.exit(call(taste_arguments))
-
