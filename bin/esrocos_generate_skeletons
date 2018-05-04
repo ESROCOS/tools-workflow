@@ -8,8 +8,6 @@ ESROCOS_YAML = "esrocos.yml"
 ROOT_DIR = os.environ['AUTOPROJ_CURRENT_ROOT']
 
 project_name = ""
-SRC_DIR = ""
-INSTALL_DIR = ""
 
 # READ YAML
 
@@ -22,8 +20,6 @@ try:
 
     data = yaml.load(infile)
     project_name = data["PROJECT_NAME"]
-    SRC_DIR = data["ASNACN_DIR"]
-    INSTALL_DIR = data["INSTALLED_TYPES_DIR"]
   
 except IOError:
   print "could not read esrocos.yml, aborting..."
