@@ -8,6 +8,7 @@ from os import walk
 ESROCOS_YAML = "esrocos.yml"
 ROOT_DIR = os.environ['AUTOPROJ_CURRENT_ROOT']
 LINKINGS_YAML = "build/linkings.yml"
+INCLUDES_YAML = "build/includes.yml"
 
 project_name = ""
 
@@ -34,10 +35,11 @@ except KeyError:
 print "DONE"
 #CONFIGURE ORCHESTRATOR_OPTIONS
 linkings = {}
+includes = {}
 orchestrator_options = ""
 
-# open link_library yml file
-
+# open link_library yml file and read linking info
+print "generate Orchestrator option",
 try:
   with open(LINKINGS_YAML, 'r') as infile:
   
@@ -45,7 +47,7 @@ try:
 
     for partition in data:
       libs = data[partition]
-      linkings[partition] = " --with-extra-lib "+partition+":"       
+      linkings[partition] = " -l "+partition+":"       
       
       first = True  
       for lib in libs:
@@ -62,10 +64,35 @@ except KeyError:
   print "could not read linkings.yml in "+LINKINGS_YAML+", aborting..."
   sys.exit()
 
-print "DONE"
+# open includes yml file and read include info
+print "generate Orchestrator option",
+try:
+  with open(INCLUDES_YAML, 'r') as infile:
+  
+    data = yaml.load(infile)
+
+    for partition in data:
+      paths = data[partition]
+      
+      for path in paths:
+          includes[path] = " -e "+partition+":"+path 
+          
+except IOError:
+  print "could not read or find includes.yml in "+INCLUDES_YAML+", no includes..."
+except KeyError:
+  print "could not read includes.yml in "+INCLUDES_YAML+", aborting..."
+  sys.exit()
+
 
 for entry in linkings:
   orchestrator_options += linkings[entry]  
+
+for entry in includes:
+  orchestrator_options += includes[entry]
+
+print "DONE"
+
+print orchestrator_options
 
 deployment_view = project_name+'_dp.aadl'
 
