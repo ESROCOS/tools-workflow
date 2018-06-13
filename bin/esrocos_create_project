@@ -88,8 +88,10 @@ print "DONE"
 
 # ADVERTISE PROJECT IN AUTOPROJ/LOCAL.AUTOBUILD
 print "create local autobuild...\t",
+project_name_ = project_name
+project_name_.replace("/","-")
 
-path = os.environ['AUTOPROJ_CURRENT_ROOT']+"/autoproj/"+project_name+".autobuild"
+path = os.environ['AUTOPROJ_CURRENT_ROOT']+"/autoproj/"+project_name_+".autobuild"
 
 try:
   with open(path, 'a') as outfile:
