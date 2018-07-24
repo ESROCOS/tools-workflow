@@ -45,6 +45,10 @@ try:
   
     data = yaml.load(infile)
 
+    # If yaml.load returns an data which cannot be handled by the for loop, we fix it :)
+    if (not data) or (data is None):
+      data = []
+
     for partition in data:
       libs = data[partition]
       linkings[partition] = " -l "+partition+":"       
@@ -70,6 +74,10 @@ try:
   with open(INCLUDES_YAML, 'r') as infile:
   
     data = yaml.load(infile)
+
+    # If yaml.load returns an data which cannot be handled by the for loop, we fix it :)
+    if (not data) or (data is None):
+      data = []
 
     for partition in data:
       paths = data[partition]
