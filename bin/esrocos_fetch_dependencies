@@ -130,7 +130,7 @@ sys.stdout.flush()
 asn_arguments = ["asn2aadlPlus"]
 asn_arguments.extend(asn_acn_files)
 asn_arguments.append(os.getcwd()+ "/" + project_name.replace(" ", "_") + "_dv.aadl")
-
+asn_arguments.append("-a")
 call(asn_arguments)
 
 print "DONE"
