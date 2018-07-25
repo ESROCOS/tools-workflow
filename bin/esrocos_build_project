@@ -51,16 +51,20 @@ try:
 
     for partition in data:
       libs = data[partition]
-      linkings[partition] = " -l "+partition+":"       
-      
-      first = True  
-      for lib in libs:
-        if not first:
-          linkings[partition] += ","
-        else: 
-          first = False
-            
-        linkings[partition] += lib
+	
+      if (not libs) or (libs is None):
+        print "Info: No libs for "+partition
+        libs = []
+      else:
+        linkings[partition] = " -l "+partition+":"       
+        first = True  
+        for lib in libs:
+          if not first:
+            linkings[partition] += ","
+          else: 
+            first = False
+          print "Adding lib "+lib+" to "+partition
+          linkings[partition] += lib
           
 except IOError:
   print "could not read or find linkings.yml in "+LINKINGS_YAML+", no linkings..."
@@ -81,9 +85,15 @@ try:
 
     for partition in data:
       paths = data[partition]
+      includes[partition] = ""
+
+      if (not paths) or (paths is None):
+        print "Info: No include paths for "+partition
+        paths = []
       
       for path in paths:
-          includes[path] = " -e "+partition+":"+path 
+          print "Adding include path "+path+" to "+partition
+          includes[partition] += " -e "+partition+":"+path 
           
 except IOError:
   print "could not read or find includes.yml in "+INCLUDES_YAML+", no includes..."
