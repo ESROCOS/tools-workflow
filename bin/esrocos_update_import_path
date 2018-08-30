@@ -1,5 +1,6 @@
 #!/bin/sh
 
-find . -name "*.aadl" -exec sed -i -e "s+/home/esrocos+$HOME+g" {} \;
 find . -name "*.aadl" -exec sed -i -e "s+/root+$HOME+g" {} \;
 find . -name "*.aadl" -exec sed -i -e "s+/taste/esrocos/+$HOME+g" {} \;
+find . -name "*.aadl" -exec sed -i -e "s+/home/esrocos+$HOME+g" {} \;
+find . -name "*.aadl" -exec sed -i -e "s+/home/taste+$HOME+g" {} \;
