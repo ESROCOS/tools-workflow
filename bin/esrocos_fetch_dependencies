@@ -65,8 +65,11 @@ print "DONE"
 # AUP
 print "calling aup, checking out deps ..."
 
-aup_arguments = ["aup", project_name]
-call(aup_arguments)
+for dep in deps:
+  for key in dep:
+    if not dep[key]:
+      amake_arguments = ["aup", key]
+      call(amake_arguments)
 
 #AMAKE
 print "calling amake, installing deps..."
