@@ -8,9 +8,10 @@ from os import walk
 from shutil import copyfile
 import re
 
+
 ESROCOS_YAML = "esrocos.yml"
 ROOT_DIR = os.environ['AUTOPROJ_CURRENT_ROOT']
-SHARED_TYPES_DIR = ROOT_DIR+"/install/types/"
+#SHARED_TYPES_DIR = ROOT_DIR+"/install/types/"
 
 project_name = ""
 SRC_DIR = ""
@@ -25,8 +26,8 @@ try:
   with open(ESROCOS_YAML, 'r') as infile:
 
     data = yaml.load(infile)
-    project_name = data["PROJECT_NAME"]
-    SRC_DIR = data["ASNACN_DIR"]
+    component_name = data["COMPONENT_NAME"]
+    project_name =data["PROJECT_NAME"]
 
 except IOError:
   print "could not read esrocos.yml, aborting..."
@@ -46,94 +47,19 @@ except KeyError as err:
   sys.exit()
 
 
-# GENERATE AUTOPROJ manifest.xml
-print "generate manifest.xml...\t\t",
-
 package = ET.Element("package")
 
-# generate autoproj entries for all packages to force package existence at compile time
 for dep in deps:
-  for key in dep:
-    if not dep[key]:
-      ET.SubElement(package, "depend", package=key)   
-
-manifest = ET.ElementTree(package)
-manifest.write("manifest.xml")
-
-print "DONE"
-
-# AUP
-print "calling aup, checking out deps ..."
-
-for dep in deps:
-  for key in dep:
-    if not dep[key]:
-      amake_arguments = ["aup", key]
-      call(amake_arguments)
+  print ("Hola Raquel")
+  print(dep)
+  amake_arguments = ["aup", dep]
+  call(amake_arguments)
 
 #AMAKE
 print "calling amake, installing deps..."
 
 for dep in deps:
-  for key in dep:
-    if not dep[key]:
-      amake_arguments = ["amake", key]
-      call(amake_arguments)
-
-# create hash map of packages to compile types from
-types_map = {}
-
-for dep in deps:
-  for key in dep:
-     if not dep[key]:
-       try: 
-         if key.startswith("types"):
-           match = key.rsplit('/',1)[-1]
-           types_map[match] = True       
-       except AttributeError:
-         print "no match"            
-
-# WALK ASN FILES TO COMPILE INTO AADL
-print "compiling shared types...\t", 
-sys.stdout.flush()
-
-# walk through each directory in the installed types
-dirs = []
-
-for (dirpath, dirnames, filenames) in walk(SHARED_TYPES_DIR):
-  dirs.extend(dirnames)
-  break
-
-asn_acn_files = []
-
-for dirname in dirs:
-  if dirname in types_map:
-      del types_map[dirname]
-  else:
-    continue
-
-  #else proceed:
- 
-  for (dirpath, dirnames, filenames) in walk(SHARED_TYPES_DIR+dirname):
-    for filename in filenames:
-      try:
-	asn_acn_files.append(dirpath+"/"+filename)
-
-      except IOError as err:
-        raise err
-
-
-print "DONE"
-
-# COMPILE ASN AND ACN TO MONOLITHIC AADL FILE
-
-print "compiling types to aadl...\t",
-sys.stdout.flush()
-
-asn_arguments = ["asn2aadlPlus"]
-asn_arguments.extend(asn_acn_files)
-asn_arguments.append(os.getcwd()+ "/" + project_name.replace(" ", "_") + "_dv.aadl")
-asn_arguments.append("-a")
-call(asn_arguments)
+    amake_arguments = ["amake", dep]
+    call(amake_arguments)
 
 print "DONE"
