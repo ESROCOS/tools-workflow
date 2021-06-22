@@ -49,17 +49,21 @@ except KeyError as err:
 
 package = ET.Element("package")
 
-for dep in deps:
-  print ("Hola Raquel")
-  print(dep)
-  amake_arguments = ["aup", dep]
-  call(amake_arguments)
+if deps: 
+    for dep in deps:
+        print(dep)
+        amake_arguments = ["aup", dep]
+        call(amake_arguments)
+else:
+    print "There are no dependencies "
+    exit()
 
 #AMAKE
 print "calling amake, installing deps..."
 
+
+
 for dep in deps:
     amake_arguments = ["amake", dep]
     call(amake_arguments)
-
 print "DONE"
