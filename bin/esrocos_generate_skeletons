@@ -18,7 +18,7 @@ data = []
 try:
   with open(ESROCOS_YAML, 'r') as infile:
 
-    data = yaml.load(infile)
+    data = yaml.load(infile, yaml.FullLoader)
     project_name = data["PROJECT_NAME"]
     component_name = data["COMPONENT_NAME"]
   

@@ -21,7 +21,7 @@ try:
       print "parsing esrocos.yml...\t\t",
       sys.stdout.flush()      
 
-      data = yaml.load(stream)
+      data = yaml.load(stream, yaml.FullLoader)
 
       project_name = data["PROJECT_NAME"]
 
