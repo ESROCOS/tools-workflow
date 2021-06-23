@@ -18,7 +18,7 @@ except ImportError:
 
 from . import ErrorCodes
 
-def write_package_templates(templates, comp_name, project,dep, templ_dir, outdir):
+def write_package_templates(templates, comp_name, project,dep,package_set_name, templ_dir, outdir):
     '''
     Write a set of Mako templates for a package.
     '''
@@ -27,7 +27,7 @@ def write_package_templates(templates, comp_name, project,dep, templ_dir, outdir
         if not os.path.isfile(outfname):
             template = Template(filename=os.path.join(templ_dir, t))
             buf = StringIO()
-            ctx = Context(buf, component_name=comp_name,project_name=project, dependencies=dep)
+            ctx = Context(buf, component_name=comp_name,project_name=project, dependencies=dep, package_set=package_set_name)
             template.render_context(ctx)
             f = open(outfname, 'w')
             f.write(buf.getvalue())
@@ -55,7 +55,7 @@ def create_component(component_name, project_name, package_set_name, dependencie
     templates = ['esrocos.yml.mako', 'manifest.xml.mako', 'CMakeLists.txt.mako', 'README.md.mako', os.path.join('model', 'CMakeLists.txt.mako')]
 
 
-    write_package_templates(templates, component_name,project_name, dependencies, templ_dir, out_dir)
+    write_package_templates(templates, component_name,project_name, dependencies,package_set_name, templ_dir, out_dir)
 
     files =['DataView.aadl', 'ConcurrencyView_Properties.aadl', 'DeploymentView.aadl', 'InterfaceView.aadl', 'Makefile', 'update_data_view.sh' ]
 
