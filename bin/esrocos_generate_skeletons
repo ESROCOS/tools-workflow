@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import yaml
 import sys
 import subprocess
@@ -11,7 +11,7 @@ project_name = ""
 
 # READ YAML
 
-print "read esrocos.yml...",
+print("read esrocos.yml...", end=" ")
 
 data = []
 
@@ -23,13 +23,13 @@ try:
     component_name = data["COMPONENT_NAME"]
   
 except IOError:
-  print "could not read esrocos.yml, aborting..."
+  print("could not read esrocos.yml, aborting...")
   sys.exit()
 except KeyError:
-  print "error parsing esrocos.yml, aborting..."
+  print("error parsing esrocos.yml, aborting...")
   sys.exit()
 
-print "DONE"
+print("DONE")
 
 print(project_name)
 

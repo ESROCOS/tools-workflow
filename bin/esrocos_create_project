@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 import os
@@ -6,7 +6,7 @@ import os
 os.system("cd ${AUTOPROJ_CURRENT_ROOT}/tools/workflow/python;./generate_new_model.py") 
 
 #FINALLY
-print """
+print("""
 ESROCOS project initialized successfully.
 Edit dependencies in >>manifest.xml
 Fetch Dependencies with >>esrocos_fetch_dependencies<<.
@@ -14,4 +14,4 @@ Then edit the project by calling >>esrocos_edit_project<<.
 Generate code stubs with >>esrocos_generate_skeletons<<.
 Build the model  >>esrocos_build_project<<
 Build the project with >>amake<<.
-"""
+""")

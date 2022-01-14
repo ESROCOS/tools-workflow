@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import yaml
 import sys
 import os
@@ -18,7 +18,7 @@ SRC_DIR = ""
 
 # READ YAML
 
-print "read esrocos.yml...\t\t\t",
+print("read esrocos.yml...\t\t\t", end=" ")
 
 data = []
 
@@ -29,20 +29,20 @@ try:
     project_name =data["PROJECT_NAME"]
 
 except IOError:
-  print "could not read esrocos.yml, aborting..."
+  print("could not read esrocos.yml, aborting...")
   sys.exit()
 except KeyError:
-  print "error parsing esrocos.yml, aborting..."
+  print("error parsing esrocos.yml, aborting...")
   sys.exit()
 
-print "DONE"
+print("DONE")
 
 # EXTRACT DEPS
 
 try:
   deps = data['deps']
 except KeyError as err:
-  print "error in reading yml data, aborting..."
+  print("error in reading yml data, aborting...")
   sys.exit()
 
 
@@ -54,15 +54,15 @@ if deps:
         amake_arguments = ["aup", dep]
         call(amake_arguments)
 else:
-    print "There are no dependencies "
+    print("There are no dependencies ")
     exit()
 
 #AMAKE
-print "calling amake, installing deps..."
+print("calling amake, installing deps...")
 
 
 
 for dep in deps:
     amake_arguments = ["amake", dep]
     call(amake_arguments)
-print "DONE"
+print("DONE")
