@@ -27,7 +27,6 @@ def main():
         else:
             break    
     project_name=words[len(words)-1]
-    package_type=words[len(words)-2]
     #Check if it is correct
     package_set_name = input ("Please enter the package set that you desire to include the new component:\n") 
 
@@ -45,8 +44,7 @@ def main():
                 print("This dependency is not installed in ESROCOS environment")
     # Create autoproj package structures
     #To check this
-    packageGenerators.call_TasteImplementation(component_name,package_type,project_name, package_set_name, dependencies)#check
-    
+    packageGenerators.create_component(component_name,project_name, package_set_name, dependencies) #check
     
 
 if __name__ == "__main__":

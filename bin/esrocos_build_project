@@ -8,7 +8,7 @@ from os import walk
 ESROCOS_YAML = "esrocos.yml"
 ROOT_DIR = os.environ['AUTOPROJ_CURRENT_ROOT']
 
-os.chdir('esrocos')
+
 project_name = ""
 
 # READ ESROCOS YAML
@@ -32,8 +32,8 @@ except KeyError:
 
 print("DONE")
 
-os.chdir("..")
-os.system("make")
+
+os.system("cd model;make")
 
 print("DONE")
 

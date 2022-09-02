@@ -21,7 +21,7 @@ SRC_DIR = ""
 print("read esrocos.yml...\t\t\t", end=" ")
 
 data = []
-os.chdir('esrocos')
+
 try:
   with open(ESROCOS_YAML, 'r') as infile:
     data = yaml.load(infile, yaml.FullLoader)

@@ -14,7 +14,7 @@ project_name = ""
 print("read esrocos.yml...", end=" ")
 
 data = []
-os.chdir('esrocos')
+
 try:
   with open(ESROCOS_YAML, 'r') as infile:
 
@@ -37,5 +37,5 @@ out_dir = os.getenv('AUTOPROJ_CURRENT_ROOT')
 
 out_dir = os.path.join(out_dir, component_name, 'model')
 print(out_dir)
-os.system("make skeletons")
+os.system("cd model;make skeletons")
 
