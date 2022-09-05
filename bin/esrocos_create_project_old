@@ -2,6 +2,7 @@
 
 import sys
 import os
+
 os.system("cd ${AUTOPROJ_CURRENT_ROOT}/tools/workflow/python;./generate_new_model.py") 
 
 #FINALLY

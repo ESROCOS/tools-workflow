@@ -12,6 +12,7 @@ ESROCOS_YAML = "esrocos.yml"
 PROJECT_NAME = ""
 
 
+
 try: 
   print("opening esrocos.yml...\t\t", end=" ")
   with open(ESROCOS_YAML, 'r') as stream:
@@ -33,6 +34,4 @@ except IOError as err:
   print("esrocos.yml file not found, please use esrocos-init-project to initialize the project first")
   sys.exit()
 
-
-
-os.system('cd model;space-creator')
+os.system('cd model;taste-edit-project')

@@ -47,7 +47,7 @@ except KeyError as err:
 
 
 package = ET.Element("package")
-os.chdir("..")
+
 if deps: 
     for dep in deps:
         print(dep)

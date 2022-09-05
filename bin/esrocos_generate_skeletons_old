@@ -1,17 +1,15 @@
 #!/usr/bin/env python3
 import yaml
 import sys
-from subprocess import call 
+import subprocess
 import os
-from os import walk
 
 ESROCOS_YAML = "esrocos.yml"
 ROOT_DIR = os.environ['AUTOPROJ_CURRENT_ROOT']
 
-
 project_name = ""
 
-# READ ESROCOS YAML
+# READ YAML
 
 print("read esrocos.yml...", end=" ")
 
@@ -22,6 +20,7 @@ try:
 
     data = yaml.load(infile, yaml.FullLoader)
     project_name = data["PROJECT_NAME"]
+    component_name = data["COMPONENT_NAME"]
   
 except IOError:
   print("could not read esrocos.yml, aborting...")
@@ -32,8 +31,11 @@ except KeyError:
 
 print("DONE")
 
+print(project_name)
 
-os.system("cd model;make")
+out_dir = os.getenv('AUTOPROJ_CURRENT_ROOT')
 
-print("DONE")
+out_dir = os.path.join(out_dir, component_name, 'model')
+print(out_dir)
+os.system("cd model;make skeletons")
 
