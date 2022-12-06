@@ -34,4 +34,4 @@ except IOError as err:
   print("esrocos.yml file not found, please use esrocos-init-project to initialize the project first")
   sys.exit()
 
-os.system('cd model;taste-edit-project')
+os.system('cd model;taste')
